@@ -19,12 +19,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 /**
- * 描述: 目录分类实现类
+ * 描述：     目录分类Service实现类
  */
 @Service
 public class CategoryServiceImpl implements CategoryService {
+
     @Autowired
     CategoryMapper categoryMapper;
 
@@ -79,9 +79,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Cacheable(value = "listCategoryForCustomer")
-    public List<CategoryVO> listCategoryForCustomer() {
+    public List<CategoryVO> listCategoryForCustomer(Integer parentId) {
         ArrayList<CategoryVO> categoryVOList = new ArrayList<>();
-        recursivelyFindCategories(categoryVOList, 0);
+        recursivelyFindCategories(categoryVOList, parentId);
         return categoryVOList;
     }
 

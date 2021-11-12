@@ -12,6 +12,9 @@ import com.imooc.mall.model.vo.CategoryVO;
 import com.imooc.mall.service.CategoryService;
 import com.imooc.mall.service.UserService;
 import io.swagger.annotations.ApiOperation;
+import java.util.List;
+import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,15 +23,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
-import java.util.List;
-
 /**
- * 描述: 目录Controller
+ * 描述：     目录Controller
  */
 @Controller
 public class CategoryController {
+
     @Autowired
     UserService userService;
 
@@ -37,23 +37,20 @@ public class CategoryController {
 
     /**
      * 后台添加目录
-     *
-     * @param session
-     * @param addCategoryReq
-     * @return
      */
     @ApiOperation("后台添加目录")
     @PostMapping("admin/category/add")
     @ResponseBody
-    public ApiRestResponse addCategory(HttpSession session, @Valid @RequestBody AddCategoryReq addCategoryReq) {
+    public ApiRestResponse addCategory(HttpSession session,
+                                       @Valid @RequestBody AddCategoryReq addCategoryReq) {
         User currentUser = (User) session.getAttribute(Constant.IMOOC_MALL_USER);
         if (currentUser == null) {
             return ApiRestResponse.error(ImoocMallExceptionEnum.NEED_LOGIN);
         }
-        // 校验是否是管理员
+        //校验是否是管理员
         boolean adminRole = userService.checkAdminRole(currentUser);
-
         if (adminRole) {
+            //是管理员，执行操作
             categoryService.add(addCategoryReq);
             return ApiRestResponse.success();
         } else {
@@ -64,15 +61,16 @@ public class CategoryController {
     @ApiOperation("后台更新目录")
     @PostMapping("admin/category/update")
     @ResponseBody
-    public ApiRestResponse updateCategory(HttpSession session, @Valid @RequestBody UpdateCategoryReq updateCategoryReq) {
+    public ApiRestResponse updateCategory(@Valid @RequestBody UpdateCategoryReq updateCategoryReq,
+                                          HttpSession session) {
         User currentUser = (User) session.getAttribute(Constant.IMOOC_MALL_USER);
         if (currentUser == null) {
             return ApiRestResponse.error(ImoocMallExceptionEnum.NEED_LOGIN);
         }
-        // 校验是否是管理员
+        //校验是否是管理员
         boolean adminRole = userService.checkAdminRole(currentUser);
-
         if (adminRole) {
+            //是管理员，执行操作
             Category category = new Category();
             BeanUtils.copyProperties(updateCategoryReq, category);
             categoryService.update(category);
@@ -102,16 +100,7 @@ public class CategoryController {
     @PostMapping("category/list")
     @ResponseBody
     public ApiRestResponse listCategoryForCustomer() {
-        List<CategoryVO> categoryVOS = categoryService.listCategoryForCustomer();
+        List<CategoryVO> categoryVOS = categoryService.listCategoryForCustomer(0);
         return ApiRestResponse.success(categoryVOS);
     }
-
-
-
 }
-/**
- * @Valid 需要验证
- * @Size(min = 2, max = 5) 字符串长度
- * @NotNull 非空
- * @Max 最大zhi
- */
