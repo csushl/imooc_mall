@@ -1,10 +1,9 @@
 package com.imooc.mall.exception;
 
 /**
- * 描述: 异常枚举
+ * 描述：     异常枚举
  */
 public enum ImoocMallExceptionEnum {
-
     NEED_USER_NAME(10001, "用户名不能为空"),
     NEED_PASSWORD(10002, "密码不能为空"),
     PASSWORD_TOO_SHORT(10003, "密码长度不能小于8位"),
@@ -20,13 +19,13 @@ public enum ImoocMallExceptionEnum {
     DELETE_FAILED(10013, "删除失败"),
     MKDIR_FAILED(10014, "文件夹创建失败"),
     UPLOAD_FAILED(10015, "图片上传失败"),
+    NOT_SALE(10015, "商品状态不可售"),
+    NOT_ENOUGH(10015, "商品库存不足"),
     SYSTEM_ERROR(20000, "系统异常，请从控制台或日志中查看具体错误信息");
-
     /**
      * 异常码
      */
     Integer code;
-
     /**
      * 异常信息
      */

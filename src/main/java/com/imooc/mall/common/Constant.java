@@ -27,6 +27,17 @@ public class Constant {
 
     }
 
+    public interface SaleStatus {
+        int NOT_SALE = 0;//商品下架状态
+        int SALE = 1;//商品上架状态
+    }
+
+    public interface Cart {
+
+        Integer NOT_SELECTED = 0;//购物车未选中
+        Integer SELECTED = 1;//购物车已选中
+    }
+
     public static String ICODE;
 
     @Value("${icode}")
