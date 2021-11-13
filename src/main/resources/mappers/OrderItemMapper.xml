@@ -1,25 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.imooc.mall.model.dao.OrderItemMapper">
   <resultMap id="BaseResultMap" type="com.imooc.mall.model.pojo.OrderItem">
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
-    <result column="product_id" jdbcType="INTEGER" property="productId" />
-    <result column="product_name" jdbcType="VARCHAR" property="productName" />
-    <result column="product_img" jdbcType="VARCHAR" property="productImg" />
-    <result column="unit_price" jdbcType="INTEGER" property="unitPrice" />
-    <result column="quantity" jdbcType="INTEGER" property="quantity" />
-    <result column="total_price" jdbcType="INTEGER" property="totalPrice" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <id column="id" jdbcType="INTEGER" property="id"/>
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo"/>
+    <result column="product_id" jdbcType="INTEGER" property="productId"/>
+    <result column="product_name" jdbcType="VARCHAR" property="productName"/>
+    <result column="product_img" jdbcType="VARCHAR" property="productImg"/>
+    <result column="unit_price" jdbcType="INTEGER" property="unitPrice"/>
+    <result column="quantity" jdbcType="INTEGER" property="quantity"/>
+    <result column="total_price" jdbcType="INTEGER" property="totalPrice"/>
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
   </resultMap>
   <sql id="Base_Column_List">
-    id, order_no, product_id, product_name, product_img, unit_price, quantity, total_price, 
+    id, order_no, product_id, product_name, product_img, unit_price, quantity, total_price,
     create_time, update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
+    select
+    <include refid="Base_Column_List"/>
     from imooc_mall_order_item
     where id = #{id,jdbcType=INTEGER}
   </select>
@@ -28,14 +29,14 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.imooc.mall.model.pojo.OrderItem">
-    insert into imooc_mall_order_item (id, order_no, product_id, 
-      product_name, product_img, unit_price, 
-      quantity, total_price, create_time, 
-      update_time)
-    values (#{id,jdbcType=INTEGER}, #{orderNo,jdbcType=VARCHAR}, #{productId,jdbcType=INTEGER}, 
-      #{productName,jdbcType=VARCHAR}, #{productImg,jdbcType=VARCHAR}, #{unitPrice,jdbcType=INTEGER}, 
-      #{quantity,jdbcType=INTEGER}, #{totalPrice,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP})
+    insert into imooc_mall_order_item (id, order_no, product_id,
+    product_name, product_img, unit_price,
+    quantity, total_price, create_time,
+    update_time)
+    values (#{id,jdbcType=INTEGER}, #{orderNo,jdbcType=VARCHAR}, #{productId,jdbcType=INTEGER},
+    #{productName,jdbcType=VARCHAR}, #{productImg,jdbcType=VARCHAR}, #{unitPrice,jdbcType=INTEGER},
+    #{quantity,jdbcType=INTEGER}, #{totalPrice,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
+    #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.imooc.mall.model.pojo.OrderItem">
     insert into imooc_mall_order_item
@@ -140,14 +141,14 @@
   <update id="updateByPrimaryKey" parameterType="com.imooc.mall.model.pojo.OrderItem">
     update imooc_mall_order_item
     set order_no = #{orderNo,jdbcType=VARCHAR},
-      product_id = #{productId,jdbcType=INTEGER},
-      product_name = #{productName,jdbcType=VARCHAR},
-      product_img = #{productImg,jdbcType=VARCHAR},
-      unit_price = #{unitPrice,jdbcType=INTEGER},
-      quantity = #{quantity,jdbcType=INTEGER},
-      total_price = #{totalPrice,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    product_id = #{productId,jdbcType=INTEGER},
+    product_name = #{productName,jdbcType=VARCHAR},
+    product_img = #{productImg,jdbcType=VARCHAR},
+    unit_price = #{unitPrice,jdbcType=INTEGER},
+    quantity = #{quantity,jdbcType=INTEGER},
+    total_price = #{totalPrice,jdbcType=INTEGER},
+    create_time = #{createTime,jdbcType=TIMESTAMP},
+    update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectByOrderNo" parameterType="java.lang.String" resultMap="BaseResultMap">

@@ -3,6 +3,7 @@ package com.imooc.mall.model.pojo;
 import java.util.Date;
 
 public class OrderItem {
+
     private Integer id;
 
     private String orderNo;

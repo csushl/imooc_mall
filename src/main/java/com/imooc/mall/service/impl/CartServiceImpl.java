@@ -35,6 +35,7 @@ public class CartServiceImpl implements CartService {
         }
         return cartVOS;
     }
+
     @Override
     public List<CartVO> add(Integer userId, Integer productId, Integer count) {
         validProduct(productId, count);
@@ -70,7 +71,7 @@ public class CartServiceImpl implements CartService {
         }
         //判断商品库存
         if (count > product.getStock()) {
-            throw new ImoocMallException(ImoocMallExceptionEnum.NOT_SALE);
+            throw new ImoocMallException(ImoocMallExceptionEnum.NOT_ENOUGH);
         }
     }
 
@@ -116,7 +117,7 @@ public class CartServiceImpl implements CartService {
             throw new ImoocMallException(ImoocMallExceptionEnum.UPDATE_FAILED);
         } else {
             //这个商品已经在购物车里了，则可以选中/不选中
-            cartMapper.selectOrNot(userId,productId,selected);
+            cartMapper.selectOrNot(userId, productId, selected);
         }
         return this.list(userId);
     }

@@ -17,9 +17,11 @@ import com.imooc.mall.model.dao.ProductMapper;
 import com.imooc.mall.model.pojo.Order;
 import com.imooc.mall.model.pojo.OrderItem;
 import com.imooc.mall.model.pojo.Product;
+import com.imooc.mall.model.query.OrderStatisticsQuery;
 import com.imooc.mall.model.request.CreateOrderReq;
 import com.imooc.mall.model.vo.CartVO;
 import com.imooc.mall.model.vo.OrderItemVO;
+import com.imooc.mall.model.vo.OrderStatisticsVO;
 import com.imooc.mall.model.vo.OrderVO;
 import com.imooc.mall.service.CartService;
 import com.imooc.mall.service.OrderService;
@@ -61,8 +63,8 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     OrderItemMapper orderItemMapper;
 
-    @Value("${file.upload.ip}")
-    String ip;
+    @Value("${file.upload.uri}")
+    String uri;
 
     @Autowired
     UserService userService;
@@ -73,7 +75,7 @@ public class OrderServiceImpl implements OrderService {
     public String create(CreateOrderReq createOrderReq) {
 
         //拿到用户ID
-        Integer userId = UserFilter.currentUser.getId();
+        Integer userId = UserFilter.userThreadLocal.get().getId();
 
         //从购物车查找已经勾选的商品
         List<CartVO> cartVOList = cartService.list(userId);
@@ -188,7 +190,7 @@ public class OrderServiceImpl implements OrderService {
             throw new ImoocMallException(ImoocMallExceptionEnum.NO_ORDER);
         }
         //订单存在，需要判断所属
-        Integer userId = UserFilter.currentUser.getId();
+        Integer userId = UserFilter.userThreadLocal.get().getId();
         if (!order.getUserId().equals(userId)) {
             throw new ImoocMallException(ImoocMallExceptionEnum.NOT_YOUR_ORDER);
         }
@@ -215,7 +217,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public PageInfo listForCustomer(Integer pageNum, Integer pageSize) {
-        Integer userId = UserFilter.currentUser.getId();
+        Integer userId = UserFilter.userThreadLocal.get().getId();
         PageHelper.startPage(pageNum, pageSize);
         List<Order> orderList = orderMapper.selectForCustomer(userId);
         List<OrderVO> orderVOList = orderListToOrderVOList(orderList);
@@ -243,7 +245,7 @@ public class OrderServiceImpl implements OrderService {
         }
         //验证用户身份
         //订单存在，需要判断所属
-        Integer userId = UserFilter.currentUser.getId();
+        Integer userId = UserFilter.userThreadLocal.get().getId();
         if (!order.getUserId().equals(userId)) {
             throw new ImoocMallException(ImoocMallExceptionEnum.NOT_YOUR_ORDER);
         }
@@ -252,7 +254,17 @@ public class OrderServiceImpl implements OrderService {
             order.setEndTime(new Date());
             orderMapper.updateByPrimaryKeySelective(order);
         } else {
-            throw new ImoocMallException(ImoocMallExceptionEnum.WRONG_ORDER_STATUS);
+            throw new ImoocMallException(ImoocMallExceptionEnum.CANCEL_WRONG_ORDER_STATUS);
+        }
+        //恢复商品库存
+        //获取订单对应的orderItemList
+        List<OrderItem> orderItemList = orderItemMapper.selectByOrderNo(order.getOrderNo());
+        for (int i = 0; i < orderItemList.size(); i++) {
+            OrderItem orderItem = orderItemList.get(i);
+            Product product = productMapper.selectByPrimaryKey(orderItem.getProductId());
+            int stock = product.getStock() + orderItem.getQuantity();
+            product.setStock(stock);
+            productMapper.updateByPrimaryKeySelective(product);
         }
     }
 
@@ -262,7 +274,7 @@ public class OrderServiceImpl implements OrderService {
                 .getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
 
-        String address = ip + ":" + request.getLocalPort();
+        String address = uri;
         String payUrl = "http://" + address + "/pay?orderNo=" + orderNo;
         try {
             QRCodeGenerator
@@ -289,7 +301,7 @@ public class OrderServiceImpl implements OrderService {
             order.setPayTime(new Date());
             orderMapper.updateByPrimaryKeySelective(order);
         } else {
-            throw new ImoocMallException(ImoocMallExceptionEnum.WRONG_ORDER_STATUS);
+            throw new ImoocMallException(ImoocMallExceptionEnum.PAY_WRONG_ORDER_STATUS);
         }
     }
 
@@ -316,7 +328,7 @@ public class OrderServiceImpl implements OrderService {
             order.setDeliveryTime(new Date());
             orderMapper.updateByPrimaryKeySelective(order);
         } else {
-            throw new ImoocMallException(ImoocMallExceptionEnum.WRONG_ORDER_STATUS);
+            throw new ImoocMallException(ImoocMallExceptionEnum.DELIVER_WRONG_ORDER_STATUS);
         }
     }
 
@@ -328,7 +340,8 @@ public class OrderServiceImpl implements OrderService {
             throw new ImoocMallException(ImoocMallExceptionEnum.NO_ORDER);
         }
         //如果是普通用户，就要校验订单的所属
-        if (!userService.checkAdminRole(UserFilter.currentUser) && !order.getUserId().equals(UserFilter.currentUser.getId())) {
+        if (!userService.checkAdminRole(UserFilter.userThreadLocal.get()) && !order.getUserId()
+                .equals(UserFilter.userThreadLocal.get().getId())) {
             throw new ImoocMallException(ImoocMallExceptionEnum.NOT_YOUR_ORDER);
         }
         //发货后可以完结订单
@@ -337,7 +350,16 @@ public class OrderServiceImpl implements OrderService {
             order.setEndTime(new Date());
             orderMapper.updateByPrimaryKeySelective(order);
         } else {
-            throw new ImoocMallException(ImoocMallExceptionEnum.WRONG_ORDER_STATUS);
+            throw new ImoocMallException(ImoocMallExceptionEnum.FINISH_WRONG_ORDER_STATUS);
         }
+    }
+
+    @Override
+    public List<OrderStatisticsVO> statistics(Date startDate, Date endDate) {
+        OrderStatisticsQuery orderStatisticsQuery = new OrderStatisticsQuery();
+        orderStatisticsQuery.setStartDate(startDate);
+        orderStatisticsQuery.setEndDate(endDate);
+        List<OrderStatisticsVO> orderStatisticsVOS = orderMapper.selectOrderStatistics(orderStatisticsQuery);
+        return orderStatisticsVOS;
     }
 }

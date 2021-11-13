@@ -7,6 +7,8 @@ import com.imooc.mall.model.request.AddCategoryReq;
 import com.imooc.mall.model.request.AddProductReq;
 import com.imooc.mall.model.request.ProductListReq;
 import com.imooc.mall.model.vo.CategoryVO;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -27,4 +29,6 @@ public interface ProductService {
     Product detail(Integer id);
 
     PageInfo list(ProductListReq productListReq);
+
+    void addProductByExcel(File destFile) throws IOException;
 }

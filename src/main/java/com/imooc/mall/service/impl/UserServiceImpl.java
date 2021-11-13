@@ -1,16 +1,19 @@
 package com.imooc.mall.service.impl;
 
+import com.imooc.mall.common.Constant;
 import com.imooc.mall.exception.ImoocMallException;
 import com.imooc.mall.exception.ImoocMallExceptionEnum;
 import com.imooc.mall.model.dao.UserMapper;
 import com.imooc.mall.model.pojo.User;
 import com.imooc.mall.service.UserService;
 import com.imooc.mall.util.MD5Utils;
+import java.security.NoSuchAlgorithmException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.security.NoSuchAlgorithmException;
-
+/**
+ * 描述：     UserService实现类
+ */
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -23,16 +26,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void register(String userName, String password) throws ImoocMallException {
-        // 查询用户名是否存在
+    public void register(String userName, String password, String emailAddress) throws ImoocMallException {
+        //查询用户名是否存在，不允许重名
         User result = userMapper.selectByName(userName);
         if (result != null) {
             throw new ImoocMallException(ImoocMallExceptionEnum.NAME_EXISTED);
         }
 
-        // 写入数据库
+        //写到数据库
         User user = new User();
         user.setUsername(userName);
+        user.setEmailAddress(emailAddress);
         try {
             user.setPassword(MD5Utils.getMD5Str(password));
         } catch (NoSuchAlgorithmException e) {
@@ -61,7 +65,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateInformation(User user) throws ImoocMallException {
-        // 更新个性签名
+        //更新个性签名
         int updateCount = userMapper.updateByPrimaryKeySelective(user);
         if (updateCount > 1) {
             throw new ImoocMallException(ImoocMallExceptionEnum.UPDATE_FAILED);
@@ -70,7 +74,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean checkAdminRole(User user) {
-        // 1 : 普通用户 ， 2: 管理员
+        //1是普通用户，2是管理员
         return user.getRole().equals(2);
+    }
+
+    @Override
+    public boolean checkEmailRegistered(String emailAddress) {
+        User user = userMapper.selectOneByEmailAddress(emailAddress);
+        if (user != null) {
+            return false;
+        }
+        return true;
     }
 }

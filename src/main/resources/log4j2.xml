@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="fatal">
   <Properties>
-    <Property name="baseDir" value="${sys:user.home}/shldev/logs"/>
+    <Property name="baseDir" value="${sys:user.home}/logs"/>
   </Properties>
 
   <Appenders>

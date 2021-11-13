@@ -13,8 +13,17 @@ import com.imooc.mall.model.request.ProductListReq;
 import com.imooc.mall.model.vo.CategoryVO;
 import com.imooc.mall.service.CategoryService;
 import com.imooc.mall.service.ProductService;
+import com.imooc.mall.util.ExcelUtil;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -136,5 +145,75 @@ public class ProductServiceImpl implements ProductService {
                 getCategoryIds(categoryVO.getChildCategory(), categoryIds);
             }
         }
+    }
+
+
+    @Override
+    public void addProductByExcel(File destFile) throws IOException {
+        List<Product> products = readProductsFromExcel(destFile);
+        for (int i = 0; i < products.size(); i++) {
+            Product product = products.get(i);
+            Product productOld = productMapper.selectByName(product.getName());
+            if (productOld != null) {
+                throw new ImoocMallException(ImoocMallExceptionEnum.NAME_EXISTED);
+            }
+            int count = productMapper.insertSelective(product);
+            if (count == 0) {
+                throw new ImoocMallException(ImoocMallExceptionEnum.CREATE_FAILED);
+            }
+        }
+    }
+
+    private List<Product> readProductsFromExcel(File excelFile) throws IOException {
+        ArrayList<Product> listProducts = new ArrayList<>();
+        FileInputStream inputStream = new FileInputStream(excelFile);
+
+        XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
+        XSSFSheet firstSheet = workbook.getSheetAt(0);
+        Iterator<Row> iterator = firstSheet.iterator();
+        while (iterator.hasNext()) {
+            Row nextRow = iterator.next();
+            Iterator<Cell> cellIterator = nextRow.cellIterator();
+            Product aProduct = new Product();
+
+            while (cellIterator.hasNext()) {
+                Cell nextCell = cellIterator.next();
+                int columnIndex = nextCell.getColumnIndex();
+
+                switch (columnIndex) {
+                    case 0:
+                        aProduct.setName((String) ExcelUtil.getCellValue(nextCell));
+                        break;
+                    case 1:
+                        aProduct.setImage((String) ExcelUtil.getCellValue(nextCell));
+                        break;
+                    case 2:
+                        aProduct.setDetail((String) ExcelUtil.getCellValue(nextCell));
+                        break;
+                    case 3:
+                        Double cellValue = (Double) ExcelUtil.getCellValue(nextCell);
+                        aProduct.setCategoryId(cellValue.intValue());
+                        break;
+                    case 4:
+                        cellValue = (Double) ExcelUtil.getCellValue(nextCell);
+                        aProduct.setPrice(cellValue.intValue());
+                        break;
+                    case 5:
+                        cellValue = (Double) ExcelUtil.getCellValue(nextCell);
+                        aProduct.setStock(cellValue.intValue());
+                        break;
+                    case 6:
+                        cellValue = (Double) ExcelUtil.getCellValue(nextCell);
+                        aProduct.setStatus(cellValue.intValue());
+                        break;
+                    default:
+                        break;
+                }
+            }
+            listProducts.add(aProduct);
+        }
+        workbook.close();
+        inputStream.close();
+        return listProducts;
     }
 }

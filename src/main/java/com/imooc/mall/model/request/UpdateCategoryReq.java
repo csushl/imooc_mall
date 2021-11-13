@@ -4,7 +4,11 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+/**
+ * 描述：     AddCategoryReq
+ */
 public class UpdateCategoryReq {
+
     @NotNull(message = "id不能为null")
     private Integer id;
 
@@ -24,6 +28,17 @@ public class UpdateCategoryReq {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "UpdateCategoryReq{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", type=" + type +
+                ", parentId=" + parentId +
+                ", orderNum=" + orderNum +
+                '}';
     }
 
     public String getName() {

@@ -11,6 +11,8 @@ public class User {
 
     private String personalizedSignature;
 
+    private String emailAddress;
+
     private Integer role;
 
     private Date createTime;
@@ -47,6 +49,14 @@ public class User {
 
     public void setPersonalizedSignature(String personalizedSignature) {
         this.personalizedSignature = personalizedSignature == null ? null : personalizedSignature.trim();
+    }
+
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress == null ? null : emailAddress.trim();
     }
 
     public Integer getRole() {

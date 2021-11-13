@@ -3,6 +3,7 @@ package com.imooc.mall.model.pojo;
 import java.util.Date;
 
 public class Cart {
+
     private Integer id;
 
     private Integer productId;

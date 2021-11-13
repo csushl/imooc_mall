@@ -25,13 +25,4 @@ public class QRCodeGenerator {
         MatrixToImageWriter.writeToPath(bitMatrix, "PNG", path);
     }
 
-    public static void main(String[] args) {
-        try {
-            generateQRCodeImage("Hello World", 350, 350, "/Users/didi/Desktop/IdeaProjects/imooc-mall-prepare-static/QRTest.png");
-        } catch (WriterException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }

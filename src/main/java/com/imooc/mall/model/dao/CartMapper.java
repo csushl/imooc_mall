@@ -2,13 +2,14 @@ package com.imooc.mall.model.dao;
 
 import com.imooc.mall.model.pojo.Cart;
 import com.imooc.mall.model.vo.CartVO;
+import io.swagger.models.auth.In;
+import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
 public interface CartMapper {
+
     int deleteByPrimaryKey(Integer id);
 
     int insert(Cart record);
@@ -23,8 +24,9 @@ public interface CartMapper {
 
     List<CartVO> selectList(@Param("userId") Integer userId);
 
-    Cart selectCartByUserIdAndProductId(@Param("userId") Integer userId, @Param("productId")Integer productId);
+    Cart selectCartByUserIdAndProductId(@Param("userId") Integer userId,
+            @Param("productId") Integer productId);
 
     Integer selectOrNot(@Param("userId") Integer userId, @Param("productId") Integer productId,
-                        @Param("selected") Integer selected);
+            @Param("selected") Integer selected);
 }

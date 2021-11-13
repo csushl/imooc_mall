@@ -3,6 +3,7 @@ package com.imooc.mall.model.vo;
 import java.util.Date;
 
 public class OrderItemVO {
+
     private String orderNo;
 
     private Integer productId;

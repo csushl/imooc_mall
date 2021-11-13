@@ -3,7 +3,9 @@ package com.imooc.mall.service;
 import com.github.pagehelper.PageInfo;
 import com.imooc.mall.model.request.CreateOrderReq;
 import com.imooc.mall.model.vo.CartVO;
+import com.imooc.mall.model.vo.OrderStatisticsVO;
 import com.imooc.mall.model.vo.OrderVO;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -29,4 +31,6 @@ public interface OrderService {
     void deliver(String orderNo);
 
     void finish(String orderNo);
+
+    List<OrderStatisticsVO> statistics(Date startDate, Date endDate);
 }

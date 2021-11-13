@@ -1,12 +1,15 @@
 package com.imooc.mall.model.dao;
 
 import com.imooc.mall.model.pojo.Order;
-import org.springframework.stereotype.Repository;
-
+import com.imooc.mall.model.query.OrderStatisticsQuery;
+import com.imooc.mall.model.vo.OrderStatisticsVO;
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public interface OrderMapper {
+
     int deleteByPrimaryKey(Integer id);
 
     int insert(Order record);
@@ -24,4 +27,6 @@ public interface OrderMapper {
     List<Order> selectForCustomer(Integer userId);
 
     List<Order> selectAllForAdmin();
+
+    List<OrderStatisticsVO> selectOrderStatistics(@Param("query") OrderStatisticsQuery query);
 }

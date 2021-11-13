@@ -22,6 +22,17 @@ public class ProductListReq {
         this.keyword = keyword;
     }
 
+    @Override
+    public String toString() {
+        return "ProductListReq{" +
+                "keyword='" + keyword + '\'' +
+                ", categoryId=" + categoryId +
+                ", orderBy='" + orderBy + '\'' +
+                ", pageNum=" + pageNum +
+                ", pageSize=" + pageSize +
+                '}';
+    }
+
     public Integer getCategoryId() {
         return categoryId;
     }

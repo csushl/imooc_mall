@@ -15,6 +15,11 @@ public class Constant {
 
     public static final String IMOOC_MALL_USER = "imooc_mall_user";
     public static final String SALT = "8svbsvjkweDF,.03[";
+    public static final String EMAIL_SUBJECT = "您的验证码";
+    public static final String EMAIL_FROM = "1234554321@qq.com";
+    public static final String WATER_MARK_JPG = "watermark.jpg";
+    public static final Integer IMAGE_SIZE = 400;
+    public static final Float IMAGE_OPACITY = 0.5f;
 
     public static String FILE_UPLOAD_DIR;
 
@@ -36,8 +41,8 @@ public class Constant {
 
     public interface Cart {
 
-        int UN_SELECTED = 0;//购物车未选中状态
-        int SELECTED = 1;//购物车选中状态
+        Integer NOT_SELECTED = 0;//购物车未选中
+        Integer SELECTED = 1;//购物车已选中
     }
 
     public enum OrderStatusEnum {
@@ -87,4 +92,11 @@ public class Constant {
     public void setICODE(String icode) {
         ICODE = icode;
     }
+
+    public static final String JWT_KEY = "imooc-mall";
+    public static final String JWT_TOKEN = "jwt_token";
+    public static final String USER_ID = "user_id";
+    public static final String USER_NAME = "user_name";
+    public static final String USER_ROLE = "user_role";
+    public static final Long EXPIRE_TIME = 60 * 1000 * 60 * 24 * 1000L;//单位是毫秒
 }
